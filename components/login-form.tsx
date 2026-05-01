@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useActionState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
@@ -21,19 +21,13 @@ import {
 } from '@/components/ui/card'
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
-  const [isLoading, setIsLoading] = useState(false)
+  const [state, formAction, isPending] = useActionState(loginWithEmail, null)
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const [isGithubLoading, setIsGithubLoading] = useState(false)
+  
   const searchParams = useSearchParams()
-  const error = searchParams.get('error')
-
-  const handleEmailLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsLoading(true)
-    const formData = new FormData(e.currentTarget)
-    await loginWithEmail(formData)
-    setIsLoading(false)
-  }
+  const urlError = searchParams.get('error')
+  const displayError = state?.error || urlError
 
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true)
@@ -84,16 +78,18 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
 
         <CardContent className="px-8 pb-6 space-y-5">
           {/* Error message */}
-          {error && (
+          {displayError && (
+            <div
               className="flex items-center gap-2 rounded-lg px-4 py-3 text-sm bg-red-50 border-l-[3px] border-l-red-700 text-red-700"
               style={{ fontFamily: 'var(--font-ui)' }}
+            >
               <span>⚠️</span>
-              <span>{decodeURIComponent(error)}</span>
+              <span>{decodeURIComponent(displayError)}</span>
             </div>
           )}
 
           {/* Email / Password form */}
-          <form onSubmit={handleEmailLogin} className="space-y-4">
+          <form action={formAction} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email" className="font-ui font-semibold text-gray-900 text-[13px] uppercase tracking-[0.05em]">
                 Adresse email
@@ -137,10 +133,10 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
 
             <Button
               type="submit"
-              disabled={isLoading || isGoogleLoading}
+              disabled={isPending || isGoogleLoading}
               className="w-full h-12 text-white font-semibold transition-all hover:opacity-90 active:scale-[0.98] bg-brand-green rounded font-ui"
             >
-              {isLoading ? (
+              {isPending ? (
                 <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Connexion en cours…</>
               ) : (
                 'SE CONNECTER'
@@ -162,7 +158,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
               type="button"
               variant="outline"
               onClick={handleGoogleLogin}
-              disabled={isLoading || isGoogleLoading || isGithubLoading}
+              disabled={isPending || isGoogleLoading || isGithubLoading}
               className="h-12 gap-3 transition-all hover:bg-gray-50 active:scale-[0.98] border-gray-200 text-gray-900 rounded font-ui font-semibold"
             >
               {isGoogleLoading ? (
@@ -183,7 +179,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
               type="button"
               variant="outline"
               onClick={handleGithubLogin}
-              disabled={isLoading || isGoogleLoading || isGithubLoading}
+              disabled={isPending || isGoogleLoading || isGithubLoading}
               className="h-12 gap-3 transition-all hover:bg-gray-50 active:scale-[0.98] border-gray-200 text-gray-900 rounded font-ui font-semibold"
             >
               {isGithubLoading ? (

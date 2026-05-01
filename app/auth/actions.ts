@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/server'
 
 // ── EMAIL / PASSWORD LOGIN ──────────────────────────────────────────────────
-export async function loginWithEmail(formData: FormData) {
+export async function loginWithEmail(prevState: any, formData: FormData) {
   const supabase = await createClient()
 
   const email = formData.get('email') as string
@@ -14,7 +14,7 @@ export async function loginWithEmail(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword({ email, password })
 
   if (error) {
-    redirect(`/auth/login?error=${encodeURIComponent(error.message)}`)
+    return { error: error.message }
   }
 
   revalidatePath('/', 'layout')
@@ -22,7 +22,7 @@ export async function loginWithEmail(formData: FormData) {
 }
 
 // ── EMAIL / PASSWORD SIGN-UP ────────────────────────────────────────────────
-export async function signUpWithEmail(formData: FormData) {
+export async function signUpWithEmail(prevState: any, formData: FormData) {
   const supabase = await createClient()
 
   const email = formData.get('email') as string
@@ -42,7 +42,7 @@ export async function signUpWithEmail(formData: FormData) {
   })
 
   if (error) {
-    redirect(`/auth/signup?error=${encodeURIComponent(error.message)}`)
+    return { error: error.message }
   }
 
   redirect('/auth/signup?message=Vérifiez votre email pour confirmer votre compte.')
