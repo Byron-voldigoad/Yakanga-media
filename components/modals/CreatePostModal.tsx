@@ -43,7 +43,7 @@ export default function CreatePostModal({ isOpen, onClose }: CreatePostModalProp
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const { data, error } = await supabase.from("categories").select("*").eq("is_active", true).order("position");
+      const { data, error } = await supabase.from("categories").select("*").order("name");
       if (error) {
         console.error("Détails de l'erreur catégories:", {
           message: error.message,
