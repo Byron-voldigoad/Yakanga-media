@@ -53,7 +53,7 @@ export default function Navbar() {
           <Link href="/" className="flex items-center space-x-2 group transition-transform hover:scale-[1.02]">
             <div className="relative w-48 h-14 overflow-hidden rounded-sm">
               <Image
-                src="/logo.jpeg"
+                src="/logo.png"
                 alt="Yakanga Logo"
                 fill
                 className="object-contain"

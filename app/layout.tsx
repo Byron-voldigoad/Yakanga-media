@@ -25,9 +25,22 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Yakanga — La mémoire des cultures contemporaines",
-  description: "Web média dédié à la culture contemporaine.",
-};
+  title: {
+    default: 'Yakanga — Le média culturel africain',
+    template: '%s | Yakanga',
+  },
+  description: 'Actualités culturelles, sport, politique et société africaine. Yakanga, le média qui raconte l\'Afrique.',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
+  openGraph: {
+    siteName: 'Yakanga',
+    locale: 'fr_FR',
+    type: 'website',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+}
 
 export default function RootLayout({
   children,
