@@ -52,20 +52,20 @@ export function SignupForm({ className, ...props }: React.ComponentPropsWithoutR
   if (message) {
     return (
       <div className={cn('flex flex-col gap-6 w-full', className)} {...props}>
-        <Card className="border-0 shadow-2xl shadow-secondary/10" style={{ borderRadius: '12px' }}>
+        <Card className="border-0 shadow-2xl shadow-secondary/10 rounded-xl">
           <div className="h-1.5 w-full" style={{ background: 'linear-gradient(to right, #2D6A2D, #E8440A)' }} />
           <CardContent className="px-8 py-16 flex flex-col items-center text-center gap-6">
-            <CheckCircle className="h-20 w-20" style={{ color: '#2D6A2D' }} />
+            <CheckCircle className="h-20 w-20 text-brand-green" />
             <div>
-              <h2 className="text-3xl mb-2" style={{ fontFamily: 'var(--font-display)', color: '#2D6A2D' }}>
+              <h2 className="text-3xl mb-2 text-brand-green" style={{ fontFamily: 'var(--font-display)' }}>
                 Vérifiez votre email
               </h2>
-              <p className="text-base leading-relaxed" style={{ fontFamily: 'var(--font-ui)', color: '#666666' }}>
+              <p className="text-base leading-relaxed text-gray-500" style={{ fontFamily: 'var(--font-ui)' }}>
                 {decodeURIComponent(message)}
               </p>
             </div>
             <Link href="/auth/login">
-              <Button className="mt-2 px-8 h-12" style={{ background: '#2D6A2D', fontFamily: 'var(--font-ui)', borderRadius: '4px' }}>
+              <Button className="mt-2 px-8 h-12 bg-brand-green rounded font-ui">
                 Retour à la connexion
               </Button>
             </Link>
@@ -77,7 +77,7 @@ export function SignupForm({ className, ...props }: React.ComponentPropsWithoutR
 
   return (
     <div className={cn('flex flex-col gap-6 w-full', className)} {...props}>
-      <Card className="border-0 shadow-2xl shadow-secondary/10 overflow-hidden relative" style={{ borderRadius: '12px' }}>
+      <Card className="border-0 shadow-2xl shadow-secondary/10 overflow-hidden relative rounded-xl">
         <CardHeader className="space-y-4 pt-10 pb-6 px-8 relative">
           <Link 
             href="/" 
@@ -94,14 +94,14 @@ export function SignupForm({ className, ...props }: React.ComponentPropsWithoutR
           </div>
           <div className="space-y-1 text-center">
             <CardTitle
-              className="text-3xl"
-              style={{ fontFamily: 'var(--font-display)', color: '#5C3A1E' }}
+              className="text-3xl text-[#5C3A1E]"
+              style={{ fontFamily: 'var(--font-display)' }}
             >
               Rejoindre Yakanga
             </CardTitle>
             <CardDescription
-              className="text-base"
-              style={{ fontFamily: 'var(--font-ui)', color: '#666666' }}
+              className="text-base text-gray-500"
+              style={{ fontFamily: 'var(--font-ui)' }}
             >
               La mémoire des cultures contemporaines
             </CardDescription>
@@ -111,10 +111,8 @@ export function SignupForm({ className, ...props }: React.ComponentPropsWithoutR
         <CardContent className="px-8 pb-6 space-y-5">
           {/* Error message */}
           {error && (
-            <div
-              className="flex items-center gap-2 rounded-lg px-4 py-3 text-sm"
-              style={{ background: '#FEF2F2', borderLeft: '3px solid #CC2200', color: '#CC2200', fontFamily: 'var(--font-ui)' }}
-            >
+              className="flex items-center gap-2 rounded-lg px-4 py-3 text-sm bg-red-50 border-l-[3px] border-l-red-700 text-red-700"
+              style={{ fontFamily: 'var(--font-ui)' }}
               <span>⚠️</span>
               <span>{decodeURIComponent(error)}</span>
             </div>
@@ -124,11 +122,11 @@ export function SignupForm({ className, ...props }: React.ComponentPropsWithoutR
           <form onSubmit={handleSignup} className="space-y-4">
             {/* Full Name */}
             <div className="space-y-2">
-              <Label htmlFor="fullName" style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, color: '#1A1A1A', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <Label htmlFor="fullName" className="font-ui font-semibold text-gray-900 text-[13px] uppercase tracking-[0.05em]">
                 Nom complet
               </Label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#666666' }} />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
                 <Input
                   id="fullName"
                   name="fullName"
@@ -136,19 +134,18 @@ export function SignupForm({ className, ...props }: React.ComponentPropsWithoutR
                   placeholder="Jean-Baptiste Mokoena"
                   required
                   autoComplete="name"
-                  className="pl-10 h-12 focus-visible:ring-1"
-                  style={{ fontFamily: 'var(--font-ui)', borderColor: '#E0E0E0' } as React.CSSProperties}
+                  className="pl-10 h-12 focus-visible:ring-1 border-gray-200 focus-visible:ring-brand-orange font-ui"
                 />
               </div>
             </div>
 
             {/* Email */}
             <div className="space-y-2">
-              <Label htmlFor="email" style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, color: '#1A1A1A', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <Label htmlFor="email" className="font-ui font-semibold text-gray-900 text-[13px] uppercase tracking-[0.05em]">
                 Adresse email
               </Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#666666' }} />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
                 <Input
                   id="email"
                   name="email"
@@ -156,19 +153,18 @@ export function SignupForm({ className, ...props }: React.ComponentPropsWithoutR
                   placeholder="vous@exemple.com"
                   required
                   autoComplete="email"
-                  className="pl-10 h-12 focus-visible:ring-1"
-                  style={{ fontFamily: 'var(--font-ui)', borderColor: '#E0E0E0' } as React.CSSProperties}
+                  className="pl-10 h-12 focus-visible:ring-1 border-gray-200 focus-visible:ring-brand-orange font-ui"
                 />
               </div>
             </div>
 
             {/* Password */}
             <div className="space-y-2">
-              <Label htmlFor="password" style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, color: '#1A1A1A', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <Label htmlFor="password" className="font-ui font-semibold text-gray-900 text-[13px] uppercase tracking-[0.05em]">
                 Mot de passe
               </Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#666666' }} />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
                 <Input
                   id="password"
                   name="password"
@@ -177,8 +173,7 @@ export function SignupForm({ className, ...props }: React.ComponentPropsWithoutR
                   required
                   minLength={8}
                   autoComplete="new-password"
-                  className="pl-10 h-12 focus-visible:ring-1"
-                  style={{ fontFamily: 'var(--font-ui)', borderColor: '#E0E0E0' } as React.CSSProperties}
+                  className="pl-10 h-12 focus-visible:ring-1 border-gray-200 focus-visible:ring-brand-orange font-ui"
                 />
               </div>
             </div>
@@ -186,8 +181,7 @@ export function SignupForm({ className, ...props }: React.ComponentPropsWithoutR
             <Button
               type="submit"
               disabled={isLoading || isGoogleLoading}
-              className="w-full h-12 text-white font-semibold transition-all hover:opacity-90 active:scale-[0.98]"
-              style={{ background: '#E8440A', fontFamily: 'var(--font-ui)', borderRadius: '4px' }}
+              className="w-full h-12 text-white font-semibold transition-all hover:opacity-90 active:scale-[0.98] bg-brand-orange rounded font-ui"
             >
               {isLoading ? (
                 <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Création du compte…</>
@@ -199,9 +193,9 @@ export function SignupForm({ className, ...props }: React.ComponentPropsWithoutR
 
           {/* Divider */}
           <div className="relative flex items-center gap-3">
-            <div className="flex-1 h-px" style={{ background: '#E0E0E0' }} />
-            <span className="text-xs" style={{ fontFamily: 'var(--font-ui)', color: '#666666' }}>OU CONTINUER AVEC</span>
-            <div className="flex-1 h-px" style={{ background: '#E0E0E0' }} />
+            <div className="flex-1 h-px bg-gray-200" />
+            <span className="text-xs text-gray-500 font-ui">OU CONTINUER AVEC</span>
+            <div className="flex-1 h-px bg-gray-200" />
           </div>
 
           {/* OAuth Buttons */}
@@ -212,8 +206,7 @@ export function SignupForm({ className, ...props }: React.ComponentPropsWithoutR
               variant="outline"
               onClick={handleGoogleLogin}
               disabled={isLoading || isGoogleLoading || isGithubLoading}
-              className="h-12 gap-3 transition-all hover:bg-gray-50 active:scale-[0.98]"
-              style={{ borderColor: '#E0E0E0', fontFamily: 'var(--font-ui)', fontWeight: 600, color: '#1A1A1A', borderRadius: '4px' }}
+              className="h-12 gap-3 transition-all hover:bg-gray-50 active:scale-[0.98] border-gray-200 text-gray-900 rounded font-ui font-semibold"
             >
               {isGoogleLoading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -234,8 +227,7 @@ export function SignupForm({ className, ...props }: React.ComponentPropsWithoutR
               variant="outline"
               onClick={handleGithubLogin}
               disabled={isLoading || isGoogleLoading || isGithubLoading}
-              className="h-12 gap-3 transition-all hover:bg-gray-50 active:scale-[0.98]"
-              style={{ borderColor: '#E0E0E0', fontFamily: 'var(--font-ui)', fontWeight: 600, color: '#1A1A1A', borderRadius: '4px' }}
+              className="h-12 gap-3 transition-all hover:bg-gray-50 active:scale-[0.98] border-gray-200 text-gray-900 rounded font-ui font-semibold"
             >
               {isGithubLoading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -249,7 +241,7 @@ export function SignupForm({ className, ...props }: React.ComponentPropsWithoutR
           </div>
 
           {/* Terms */}
-          <p className="text-center text-xs leading-relaxed" style={{ fontFamily: 'var(--font-ui)', color: '#999999' }}>
+          <p className="text-center text-xs leading-relaxed text-gray-400 font-ui">
             En créant un compte, vous acceptez nos{' '}
             <Link href="/mentions-legales" className="underline hover:text-primary">conditions d'utilisation</Link>
             {' '}et notre{' '}
@@ -258,9 +250,9 @@ export function SignupForm({ className, ...props }: React.ComponentPropsWithoutR
         </CardContent>
 
         <CardFooter className="px-8 pb-10 flex justify-center">
-          <p className="text-sm" style={{ fontFamily: 'var(--font-ui)', color: '#666666' }}>
+          <p className="text-sm text-gray-500 font-ui">
             Déjà un compte ?{' '}
-            <Link href="/auth/login" className="font-semibold transition-colors hover:underline" style={{ color: '#2D6A2D' }}>
+            <Link href="/auth/login" className="font-semibold transition-colors hover:underline text-brand-green">
               Se connecter
             </Link>
           </p>

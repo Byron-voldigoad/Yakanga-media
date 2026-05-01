@@ -50,8 +50,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
   return (
     <div className={cn('flex flex-col gap-6 w-full', className)} {...props}>
       <Card
-        className="border-0 shadow-2xl shadow-secondary/10 overflow-hidden relative"
-        style={{ borderRadius: '12px' }}
+        className="border-0 shadow-2xl shadow-secondary/10 overflow-hidden relative rounded-xl"
       >
         <CardHeader className="space-y-4 pt-10 pb-6 px-8 relative">
           <Link 
@@ -69,14 +68,14 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
           </div>
           <div className="space-y-1 text-center">
             <CardTitle
-              className="text-3xl"
-              style={{ fontFamily: 'var(--font-display)', color: '#2D6A2D' }}
+              className="text-3xl text-brand-green"
+              style={{ fontFamily: 'var(--font-display)' }}
             >
               Bon retour !
             </CardTitle>
             <CardDescription
-              className="text-base"
-              style={{ fontFamily: 'var(--font-ui)', color: '#666666' }}
+              className="text-base text-gray-500"
+              style={{ fontFamily: 'var(--font-ui)' }}
             >
               Connectez-vous pour accéder à Yakanga
             </CardDescription>
@@ -86,10 +85,8 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         <CardContent className="px-8 pb-6 space-y-5">
           {/* Error message */}
           {error && (
-            <div
-              className="flex items-center gap-2 rounded-lg px-4 py-3 text-sm"
-              style={{ background: '#FEF2F2', borderLeft: '3px solid #CC2200', color: '#CC2200', fontFamily: 'var(--font-ui)' }}
-            >
+              className="flex items-center gap-2 rounded-lg px-4 py-3 text-sm bg-red-50 border-l-[3px] border-l-red-700 text-red-700"
+              style={{ fontFamily: 'var(--font-ui)' }}
               <span>⚠️</span>
               <span>{decodeURIComponent(error)}</span>
             </div>
@@ -98,11 +95,11 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
           {/* Email / Password form */}
           <form onSubmit={handleEmailLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, color: '#1A1A1A', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <Label htmlFor="email" className="font-ui font-semibold text-gray-900 text-[13px] uppercase tracking-[0.05em]">
                 Adresse email
               </Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#666666' }} />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
                 <Input
                   id="email"
                   name="email"
@@ -110,23 +107,22 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                   placeholder="vous@exemple.com"
                   required
                   autoComplete="email"
-                  className="pl-10 h-12 focus-visible:ring-1"
-                  style={{ fontFamily: 'var(--font-ui)', borderColor: '#E0E0E0', '--tw-ring-color': '#2D6A2D' } as React.CSSProperties}
+                  className="pl-10 h-12 focus-visible:ring-1 border-gray-200 focus-visible:ring-brand-green font-ui"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password" style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, color: '#1A1A1A', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                <Label htmlFor="password" className="font-ui font-semibold text-gray-900 text-[13px] uppercase tracking-[0.05em]">
                   Mot de passe
                 </Label>
-                <Link href="/auth/reset-password" className="text-xs transition-colors" style={{ fontFamily: 'var(--font-ui)', color: '#2D6A2D' }}>
+                <Link href="/auth/reset-password" className="text-xs transition-colors text-brand-green font-ui">
                   Mot de passe oublié ?
                 </Link>
               </div>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: '#666666' }} />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
                 <Input
                   id="password"
                   name="password"
@@ -134,8 +130,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                   placeholder="••••••••"
                   required
                   autoComplete="current-password"
-                  className="pl-10 h-12 focus-visible:ring-1"
-                  style={{ fontFamily: 'var(--font-ui)', borderColor: '#E0E0E0', '--tw-ring-color': '#2D6A2D' } as React.CSSProperties}
+                  className="pl-10 h-12 focus-visible:ring-1 border-gray-200 focus-visible:ring-brand-green font-ui"
                 />
               </div>
             </div>
@@ -143,8 +138,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
             <Button
               type="submit"
               disabled={isLoading || isGoogleLoading}
-              className="w-full h-12 text-white font-semibold transition-all hover:opacity-90 active:scale-[0.98]"
-              style={{ background: '#2D6A2D', fontFamily: 'var(--font-ui)', borderRadius: '4px' }}
+              className="w-full h-12 text-white font-semibold transition-all hover:opacity-90 active:scale-[0.98] bg-brand-green rounded font-ui"
             >
               {isLoading ? (
                 <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Connexion en cours…</>
@@ -156,9 +150,9 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
 
           {/* Divider */}
           <div className="relative flex items-center gap-3">
-            <div className="flex-1 h-px" style={{ background: '#E0E0E0' }} />
-            <span className="text-xs" style={{ fontFamily: 'var(--font-ui)', color: '#666666' }}>OU CONTINUER AVEC</span>
-            <div className="flex-1 h-px" style={{ background: '#E0E0E0' }} />
+            <div className="flex-1 h-px bg-gray-200" />
+            <span className="text-xs text-gray-500 font-ui">OU CONTINUER AVEC</span>
+            <div className="flex-1 h-px bg-gray-200" />
           </div>
 
           {/* OAuth Buttons */}
@@ -169,8 +163,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
               variant="outline"
               onClick={handleGoogleLogin}
               disabled={isLoading || isGoogleLoading || isGithubLoading}
-              className="h-12 gap-3 transition-all hover:bg-gray-50 active:scale-[0.98]"
-              style={{ borderColor: '#E0E0E0', fontFamily: 'var(--font-ui)', fontWeight: 600, color: '#1A1A1A', borderRadius: '4px' }}
+              className="h-12 gap-3 transition-all hover:bg-gray-50 active:scale-[0.98] border-gray-200 text-gray-900 rounded font-ui font-semibold"
             >
               {isGoogleLoading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -191,8 +184,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
               variant="outline"
               onClick={handleGithubLogin}
               disabled={isLoading || isGoogleLoading || isGithubLoading}
-              className="h-12 gap-3 transition-all hover:bg-gray-50 active:scale-[0.98]"
-              style={{ borderColor: '#E0E0E0', fontFamily: 'var(--font-ui)', fontWeight: 600, color: '#1A1A1A', borderRadius: '4px' }}
+              className="h-12 gap-3 transition-all hover:bg-gray-50 active:scale-[0.98] border-gray-200 text-gray-900 rounded font-ui font-semibold"
             >
               {isGithubLoading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -207,9 +199,9 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         </CardContent>
 
         <CardFooter className="px-8 pb-10 flex justify-center">
-          <p className="text-sm" style={{ fontFamily: 'var(--font-ui)', color: '#666666' }}>
+          <p className="text-sm text-gray-500 font-ui">
             Pas encore de compte ?{' '}
-            <Link href="/auth/signup" className="font-semibold transition-colors hover:underline" style={{ color: '#E8440A' }}>
+            <Link href="/auth/signup" className="font-semibold transition-colors hover:underline text-brand-orange">
               Créer un compte
             </Link>
           </p>

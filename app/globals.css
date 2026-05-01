@@ -18,6 +18,8 @@
   --color-bg-cream: var(--bg-cream);
   --color-bg-dark: var(--bg-dark);
   --color-text-muted: var(--text-muted);
+  --color-brand-green: var(--primary);
+  --color-brand-orange: var(--accent);
 
   --font-display: var(--font-display);
   --font-heading: var(--font-heading);
