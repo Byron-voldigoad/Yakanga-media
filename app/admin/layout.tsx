@@ -16,10 +16,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (!profile || !['admin', 'editor'].includes(profile.role)) redirect('/')
 
   return (
-    <div className="min-h-screen bg-[#0F0F0F] flex">
+    <div className="min-h-screen bg-[#FDFDFD] flex">
       <AdminSidebar fullName={profile.full_name} role={profile.role} />
-      <main className="ml-60 flex-1 bg-[#F5F4F0] min-h-screen">
-        <div className="p-8">{children}</div>
+      <main className="ml-64 flex-1 bg-[#F5F0C8]/20 min-h-screen">
+        <div className="p-10 max-w-7xl mx-auto">{children}</div>
       </main>
     </div>
   )

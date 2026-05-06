@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/server'
 import Link from 'next/link'
 import { FileText, CheckCircle, Clock, ArrowRight } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
 
 export default async function AdminDashboard() {
   const supabase = await createClient()
@@ -18,74 +19,88 @@ export default async function AdminDashboard() {
     .limit(5)
 
   const stats = [
-    { label: 'Total articles', value: total ?? 0, icon: FileText, color: 'text-gray-600', bg: 'bg-gray-100' },
-    { label: 'Publiés', value: published ?? 0, icon: CheckCircle, color: 'text-[#2D6A2D]', bg: 'bg-[#2D6A2D]/10' },
-    { label: 'Brouillons', value: drafts ?? 0, icon: Clock, color: 'text-[#E8440A]', bg: 'bg-[#E8440A]/10' },
+    { label: 'Total articles', value: total ?? 0, icon: FileText, color: 'text-secondary', bg: 'bg-secondary/5' },
+    { label: 'Publiés', value: published ?? 0, icon: CheckCircle, color: 'text-primary', bg: 'bg-primary/10' },
+    { label: 'Brouillons', value: drafts ?? 0, icon: Clock, color: 'text-accent', bg: 'bg-accent/10' },
   ]
 
   return (
-    <div>
+    <div className="space-y-10">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-xl font-bold text-gray-900">Tableau de bord</h1>
-        <p className="text-sm text-gray-400 mt-0.5">Vue d'ensemble de votre média</p>
+      <div>
+        <h1 className="text-4xl font-heading text-secondary uppercase tracking-tight">Tableau de bord</h1>
+        <p className="text-sm font-ui text-muted-foreground mt-2 italic">La mémoire des cultures contemporaines — Administration</p>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {stats.map(({ label, value, icon: Icon, color, bg }) => (
-          <div key={label} className="bg-white rounded-2xl p-5 border border-gray-100">
-            <div className="flex items-center justify-between mb-5">
-              <span className="text-xs text-gray-400 font-medium">{label}</span>
-              <div className={`w-8 h-8 ${bg} rounded-xl flex items-center justify-center`}>
-                <Icon size={14} className={color} />
+          <div key={label} className="bg-white rounded-3xl p-8 border border-border shadow-sm hover:shadow-md transition-all group">
+            <div className="flex items-center justify-between mb-6">
+              <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">{label}</span>
+              <div className={`w-12 h-12 ${bg} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                <Icon size={20} className={color} />
               </div>
             </div>
-            <p className={`text-3xl font-black ${color}`}>{value}</p>
+            <p className={`text-5xl font-heading tracking-tighter ${color}`}>{value}</p>
           </div>
         ))}
       </div>
 
-      {/* Articles récents */}
-      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-50">
-          <h2 className="text-sm font-semibold text-gray-900">Articles récents</h2>
-          <Link href="/admin/articles" className="text-xs text-[#2D6A2D] font-medium flex items-center gap-1 hover:gap-2 transition-all">
-            Voir tout <ArrowRight size={12} />
-          </Link>
-        </div>
-        <div className="divide-y divide-gray-50">
-          {recent?.map((article) => (
-            <div key={article.id} className="flex items-center justify-between px-6 py-3.5 hover:bg-gray-50/50 transition-colors">
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-gray-800 truncate">{article.title}</p>
-                <p className="text-xs text-gray-400 mt-0.5">
-                  {(article.categories as any)?.name ?? 'Sans catégorie'} · {new Date(article.created_at).toLocaleDateString('fr-FR')}
-                </p>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Articles récents */}
+        <div className="lg:col-span-8 bg-white rounded-3xl border border-border shadow-sm overflow-hidden">
+          <div className="flex items-center justify-between px-8 py-6 border-b border-border bg-muted/20">
+            <h2 className="text-sm font-bold text-secondary uppercase tracking-widest">Articles récents</h2>
+            <Link href="/admin/articles" className="text-xs text-primary font-bold flex items-center gap-2 hover:gap-3 transition-all">
+              VOIR TOUT <ArrowRight size={14} />
+            </Link>
+          </div>
+          <div className="divide-y divide-border">
+            {recent?.map((article) => (
+              <div key={article.id} className="flex items-center justify-between px-8 py-5 hover:bg-[#F5F0C8]/20 transition-colors group">
+                <div className="min-w-0 flex-1">
+                  <p className="font-display text-lg text-secondary truncate group-hover:text-primary transition-colors">{article.title}</p>
+                  <p className="text-xs font-ui text-muted-foreground mt-1">
+                    {(article.categories as any)?.name ?? 'Général'} · {new Date(article.created_at).toLocaleDateString('fr-FR')}
+                  </p>
+                </div>
+                <Badge variant="outline" className={`ml-4 shrink-0 font-heading text-[10px] uppercase tracking-widest ${
+                  article.status === 'published' ? 'border-primary/20 text-primary' : 'border-accent/20 text-accent'
+                }`}>
+                  {article.status === 'published' ? 'Publié' : 'Brouillon'}
+                </Badge>
               </div>
-              <span className={`ml-4 shrink-0 text-xs px-2.5 py-1 rounded-full font-medium ${
-                article.status === 'published' ? 'bg-green-50 text-green-700' :
-                article.status === 'draft' ? 'bg-orange-50 text-orange-600' :
-                'bg-gray-100 text-gray-500'
-              }`}>
-                {article.status === 'published' ? 'Publié' : article.status === 'draft' ? 'Brouillon' : 'Archivé'}
-              </span>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* CTA */}
-      <div className="mt-6 flex gap-3">
-        <Link href="/admin/articles/new"
-          className="bg-[#2D6A2D] text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-[#245a24] transition-colors">
-          + Nouvel article
-        </Link>
-        <Link href="/admin/articles"
-          className="bg-white border border-gray-200 text-gray-600 px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors">
-          Gérer les articles
-        </Link>
+        {/* Quick Actions */}
+        <div className="lg:col-span-4 space-y-6">
+          <div className="bg-secondary p-8 rounded-3xl text-white shadow-xl shadow-secondary/20 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+            <h3 className="font-heading text-xl mb-6 relative z-10">ACTIONS RAPIDES</h3>
+            <div className="space-y-4 relative z-10">
+              <Link href="/admin/articles/new"
+                className="flex items-center justify-center w-full bg-accent hover:bg-white hover:text-primary px-6 py-4 rounded-xl text-sm font-bold transition-all shadow-lg shadow-accent/20">
+                + NOUVEL ARTICLE
+              </Link>
+              <Link href="/admin/articles"
+                className="flex items-center justify-center w-full bg-white/10 border border-white/20 hover:bg-white hover:text-secondary px-6 py-4 rounded-xl text-sm font-bold transition-all">
+                GÉRER LE CONTENU
+              </Link>
+            </div>
+          </div>
+          
+          <div className="bg-[#F5F0C8] p-8 rounded-3xl border border-[#5C3A1E]/10">
+            <h3 className="font-heading text-lg text-[#5C3A1E] mb-4">REMARQUE</h3>
+            <p className="font-body text-sm text-[#5C3A1E]/70 leading-relaxed italic">
+              Yakanga est le gardien de la mémoire culturelle. Chaque article publié contribue à cet héritage précieux.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   )
 }
+

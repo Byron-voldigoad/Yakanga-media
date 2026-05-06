@@ -1,33 +1,40 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, FileText, PlusCircle, ArrowLeft, Settings } from 'lucide-react'
+import Image from 'next/image'
+import { ArrowLeft, FileText, LayoutDashboard, Megaphone, PlusCircle } from 'lucide-react'
 
 type Props = { fullName: string; role: string }
 
 const navItems = [
   { href: '/admin', label: 'Tableau de bord', icon: LayoutDashboard, exact: true },
   { href: '/admin/articles/new', label: 'Nouvel article', icon: PlusCircle, exact: true },
-  { href: '/admin/articles', label: 'Articles', icon: FileText, exact: true },
+  { href: '/admin/articles', label: 'Articles', icon: FileText, exact: false },
+  { href: '/admin/sponsors', label: 'Publicité', icon: Megaphone, exact: false },
 ]
 
 export default function AdminSidebar({ fullName, role }: Props) {
   const pathname = usePathname()
 
   function isActive(href: string, exact: boolean) {
-    return pathname === href
+    if (exact) return pathname === href
+    return pathname.startsWith(href)
   }
 
   return (
-    <aside className="w-60 bg-[#111111] fixed h-full flex flex-col z-10 border-r border-white/5">
-      {/* Logo */}
-      <div className="px-6 pt-7 pb-6 border-b border-white/5">
-        <div className="flex items-center gap-2 mb-4">
-          <div className="w-7 h-7 bg-[#2D6A2D] rounded-lg flex items-center justify-center">
-            <span className="text-white text-xs font-black">Y</span>
+    <aside className="w-64 bg-[#1A1A1A] fixed h-full flex flex-col z-10 border-r border-white/5 shadow-2xl">
+      {/* Logo Area */}
+      <div className="px-8 pt-10 pb-8">
+        <Link href="/" className="block mb-10 transition-transform hover:scale-105">
+          <div className="relative w-full h-12">
+            <Image
+              src="/logo.png"
+              alt="Yakanga Logo"
+              fill
+              className="object-contain object-left brightness-0 invert"
+            />
           </div>
-          <span className="text-white font-bold text-sm tracking-wide">Yakanga CMS</span>
-        </div>
+        </Link>
         <div className="bg-white/5 rounded-xl px-3 py-2.5">
           <p className="text-white text-xs font-semibold truncate">{fullName}</p>
           <p className="text-white/30 text-xs mt-0.5 capitalize">{role}</p>

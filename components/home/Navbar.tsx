@@ -21,8 +21,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const categories = [
-  { name: "Édito", slug: "edito" },
-  { name: "Actualités", slug: "actualites" },
+  { name: "Édito", slug: "editorial" },
+  { name: "Actualités", slug: "news" },
   { name: "Opinions", slug: "opinions" },
   { name: "Mode", slug: "mode" },
   { name: "Kalara", slug: "kalara" },
@@ -30,18 +30,35 @@ const categories = [
 
 export default function Navbar() {
   const [user, setUser] = useState<User | null>(null);
+  const [role, setRole] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const supabase = createClient();
 
   useEffect(() => {
+    const getUserData = async (user: User | null) => {
+      if (!user) {
+        setRole(null);
+        return;
+      }
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+      setRole(profile?.role ?? "reader");
+    };
+
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
+      getUserData(user);
     };
     getUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      getUserData(currentUser);
     });
 
     return () => subscription.unsubscribe();
@@ -84,7 +101,7 @@ export default function Navbar() {
             />
           </div>
           {user && (
-            <Button 
+            <Button
               onClick={() => setIsModalOpen(true)}
               className="bg-accent hover:bg-accent/90 text-white font-ui font-semibold gap-2 hidden lg:flex shadow-lg shadow-accent/20"
             >
@@ -112,6 +129,14 @@ export default function Navbar() {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                {role && ["admin", "editor"].includes(role) && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/admin" className="cursor-pointer text-primary font-semibold">
+                      <PlusCircle className="mr-2 h-4 w-4" />
+                      <span>Administration</span>
+                    </Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem asChild>
                   <Link href="/profile" className="cursor-pointer">
                     <UserIcon className="mr-2 h-4 w-4" />

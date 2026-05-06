@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import Navbar from "./home/Navbar";
 import Hero from "./home/Hero";
 import CulturalNews from "./home/CulturalNews";
+import NewsletterSection from "./home/NewsletterSection";
 import PortraitsInterviews from "./home/PortraitsInterviews";
+import BannerAd from "./home/BannerAd";
 import Footer from "./home/Footer";
 
 export default function HomeScreen() {
@@ -14,18 +16,16 @@ export default function HomeScreen() {
       <Navbar />
 
       <main className="flex-1">
-        {/* BANDE PUB (Optional: could also be fragmented if reused) */}
+        {/* BANDE PUB */}
         <section className="bg-muted py-8 border-b border-border">
           <div className="container mx-auto px-4">
-            <div className="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center text-muted-foreground font-ui italic text-sm overflow-hidden relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse" />
-              <span className="relative z-10">Espace Publicitaire — 728x90</span>
-            </div>
+            <BannerAd position="header" />
           </div>
         </section>
 
         <Hero />
         <CulturalNews />
+        <NewsletterSection />
         <PortraitsInterviews />
       </main>
 

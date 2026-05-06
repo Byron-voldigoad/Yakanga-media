@@ -296,16 +296,16 @@ create table if not exists public.categories (
 
 -- Insérer les rubriques Yakanga par défaut
 insert into public.categories (name, slug, position) values
-  ('Édito',                    'edito',              1),
-  ('Actualités',               'actualites',         2),
-  ('Opinions',                 'opinions',           3),
-  ('Le commentaire d''écoute', 'commentaire-ecoute', 4),
-  ('Mode',                     'mode',               5),
-  ('Kalara',                   'kalara',             6),
-  ('Portraits',                'portraits',          7),
-  ('Interviews',               'interviews',         8),
-  ('Dossiers',                 'dossiers',           9),
-  ('Découverte',               'decouverte',        10)
+  ('Édito',                    'editorial',           1),
+  ('Actualités',               'news',                2),
+  ('Opinions',                 'opinions',            3),
+  ('Le commentaire d''écoute', 'listening-commentary', 4),
+  ('Mode',                     'mode',                5),
+  ('Kalara',                   'kalara',              6),
+  ('Portraits',                'portraits',           7),
+  ('Interviews',               'interviews',          8),
+  ('Dossiers',                 'features',            9),
+  ('Découverte',               'discovery',          10)
 on conflict (slug) do nothing;
 
 -- 3. ARTICLES
@@ -316,7 +316,7 @@ create table if not exists public.articles (
   excerpt text,
   content text not null,
   cover_url text,
-  category_id int references public.categories(id) on delete set null,
+  category_id bigint references public.categories(id) on delete set null,
   author_id uuid references public.profiles(id) on delete set null,
   status text default 'draft' check (status in ('draft', 'published', 'archived')),
   is_featured boolean default false,
@@ -326,6 +326,21 @@ create table if not exists public.articles (
   published_at timestamptz,
   created_at timestamptz default now(),
   updated_at timestamptz default now()
+);
+
+-- 8. Table des publicités (Sponsors)
+CREATE TABLE sponsors (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  image_url TEXT NOT NULL,
+  link_url TEXT NOT NULL,
+  position TEXT NOT NULL, -- 'header', 'sidebar', 'content', 'popup'
+  is_active BOOLEAN DEFAULT true,
+  views_count INTEGER DEFAULT 0,
+  clicks_count INTEGER DEFAULT 0,
+  starts_at TIMESTAMPTZ DEFAULT NOW(),
+  ends_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Index pour les performances

@@ -6,14 +6,23 @@ import Link from 'next/link'
 
 type Category = { id: number; name: string }
 
-export default function NewArticleForm({ categories, userId }: { categories: Category[]; userId: string }) {
+export default function NewArticleForm({ 
+  categories, 
+  userId,
+  initialData
+}: { 
+  categories: Category[]; 
+  userId: string;
+  initialData?: any;
+}) {
   const router = useRouter()
   const supabase = createClient()
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
-  const [categoryId, setCategoryId] = useState('')
-  const [status, setStatus] = useState<'draft' | 'published'>('draft')
-  const [coverUrl, setCoverUrl] = useState('')
+  
+  const [title, setTitle] = useState(initialData?.title || '')
+  const [content, setContent] = useState(initialData?.content || '')
+  const [categoryId, setCategoryId] = useState(initialData?.category_id ? String(initialData.category_id) : '')
+  const [status, setStatus] = useState<'draft' | 'published'>(initialData?.status || 'draft')
+  const [coverUrl, setCoverUrl] = useState(initialData?.cover_url || '')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [uploadingImage, setUploadingImage] = useState(false)
@@ -23,21 +32,47 @@ export default function NewArticleForm({ categories, userId }: { categories: Cat
     setLoading(true)
     setError('')
 
-    const slug = title.toLowerCase()
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '')
-      + '-' + Date.now()
-
-    const { error: err } = await supabase.from('articles').insert({
-      title, slug, content,
+    const articleData = {
+      title,
+      content,
       cover_url: coverUrl || null,
       category_id: categoryId ? parseInt(categoryId) : null,
-      author_id: userId,
       status,
-    })
+      updated_at: new Date().toISOString(),
+    }
 
-    if (err) { setError(err.message); setLoading(false); return }
+    let err
+    if (initialData?.id) {
+      // Update existing article
+      const { error: updateErr } = await supabase
+        .from('articles')
+        .update(articleData)
+        .eq('id', initialData.id)
+      err = updateErr
+    } else {
+      // Insert new article
+      const slug = title.toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '')
+        + '-' + Date.now()
+        
+      const { error: insertErr } = await supabase
+        .from('articles')
+        .insert({
+          ...articleData,
+          slug,
+          author_id: userId,
+        })
+      err = insertErr
+    }
+
+    if (err) { 
+      setError(err.message)
+      setLoading(false)
+      return 
+    }
+    
     router.push('/admin/articles')
     router.refresh()
   }
@@ -52,7 +87,7 @@ export default function NewArticleForm({ categories, userId }: { categories: Cat
             ← Articles
           </Link>
           <span className="text-gray-200">/</span>
-          <span className="text-sm text-gray-600 font-medium">Nouvel article</span>
+          <span className="text-sm text-gray-600 font-medium">{initialData ? 'Modifier l\'article' : 'Nouvel article'}</span>
         </div>
         <div className="flex items-center gap-2">
           {/* Toggle statut */}
@@ -76,7 +111,7 @@ export default function NewArticleForm({ categories, userId }: { categories: Cat
             onClick={handleSubmit}
             disabled={loading}
             className="bg-[#1A1A1A] text-white px-5 py-2 rounded-xl text-sm font-medium hover:bg-black disabled:opacity-40 transition-colors">
-            {loading ? 'Enregistrement...' : status === 'published' ? '↑ Publier' : '↓ Sauvegarder'}
+            {loading ? 'Enregistrement...' : initialData ? 'Mettre à jour' : (status === 'published' ? '↑ Publier' : '↓ Sauvegarder')}
           </button>
         </div>
       </div>
