@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
-import { ArrowLeft, FileText, LayoutDashboard, Megaphone, PlusCircle } from 'lucide-react'
+import { ArrowLeft, FileText, LayoutDashboard, Mail, Megaphone, PlusCircle } from 'lucide-react'
 
 type Props = { fullName: string; role: string }
 
@@ -11,6 +11,7 @@ const navItems = [
   { href: '/admin/articles/new', label: 'Nouvel article', icon: PlusCircle, exact: true },
   { href: '/admin/articles', label: 'Articles', icon: FileText, exact: false },
   { href: '/admin/sponsors', label: 'Publicité', icon: Megaphone, exact: false },
+  { href: '/admin/newsletter', label: 'Newsletter', icon: Mail, exact: false },
 ]
 
 export default function AdminSidebar({ fullName, role }: Props) {
