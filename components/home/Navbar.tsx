@@ -21,6 +21,12 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CATEGORIES } from "@/lib/constants";
 
+const logos = [
+  '/logo-noir.png',
+  '/logo-couleur.png',
+  '/logo-vert.png',
+]
+
 export default function Navbar() {
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<string | null>(null);
@@ -28,6 +34,7 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileRubriquesOpen, setIsMobileRubriquesOpen] = useState(false);
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
+  const [currentLogo, setCurrentLogo] = useState(0);
   const supabase = createClient();
 
   useEffect(() => {
@@ -60,19 +67,31 @@ export default function Navbar() {
     return () => subscription.unsubscribe();
   }, [supabase]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentLogo((prev) => (prev + 1) % logos.length)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [])
+
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-border/40 backdrop-blur supports-[backdrop-filter]:bg-white/80">
       <div className="container mx-auto flex h-20 items-center justify-between px-4 lg:px-8">
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center space-x-2 group transition-transform hover:scale-[1.02]">
-            <div className="relative w-48 h-14 overflow-hidden rounded-sm">
-              <Image
-                src="/logo.png"
-                alt="Yakanga Logo"
-                fill
-                className="object-contain"
-                priority
-              />
+          <Link href="/">
+            <div className="relative h-14 w-44">
+              {logos.map((src, index) => (
+                <Image
+                  key={src}
+                  src={src}
+                  alt="Yakanga"
+                  fill
+                  className={`object-contain transition-opacity duration-700
+                              ${index === currentLogo
+                                ? 'opacity-100'
+                                : 'opacity-0'}`}
+                />
+              ))}
             </div>
           </Link>
 
