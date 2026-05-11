@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Abril_Fatface, Bebas_Neue, Lora, DM_Sans } from "next/font/google";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import "./globals.css";
 
 const abrilFatface = Abril_Fatface({
@@ -52,7 +53,10 @@ export default function RootLayout({
       lang="fr"
       className={`${abrilFatface.variable} ${bebasNeue.variable} ${lora.variable} ${dmSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-ui text-text">{children}</body>
+      <body className="min-h-full flex flex-col font-ui text-text">
+        {children}
+        <WhatsAppButton />
+      </body>
     </html>
   );
 }

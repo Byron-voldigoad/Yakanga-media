@@ -108,6 +108,7 @@ export async function getArticleBySlug(slug: string) {
       excerpt,
       content,
       cover_url,
+      video_url,
       created_at,
       published_at,
       author_id,

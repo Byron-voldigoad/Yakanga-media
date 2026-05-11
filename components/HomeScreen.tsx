@@ -30,13 +30,6 @@ export default function HomeScreen() {
       </main>
 
       <Footer />
-
-      {/* WHATSAPP FLOATING BUTTON */}
-      <Button
-        className="fixed bottom-6 right-6 h-16 w-16 rounded-full bg-[#25D366] hover:bg-[#128C7E] text-white shadow-2xl shadow-green-500/30 z-[100] p-0 flex items-center justify-center transition-transform hover:scale-110 active:scale-95"
-      >
-        <MessageCircle className="h-8 w-8 fill-current" />
-      </Button>
     </div>
   );
 }

@@ -14,7 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { createClient } from "@/lib/server";
 import MDPreviewClient from "@/components/articles/MDPreviewClient";
-
+import ShareButtons from "@/components/articles/ShareButtons";
+import YouTubeEmbed from "@/components/articles/YouTubeEmbed";
 
 interface ArticlePageProps {
   params: Promise<{
@@ -158,6 +159,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                     className="font-body text-text text-lg md:text-xl leading-[1.8] space-y-8 first-letter:text-6xl first-letter:font-display first-letter:mr-3 first-letter:float-left first-letter:text-primary"
                     source={article.content || ''} 
                   />
+                  {/* @ts-ignore */}
+                  {article.video_url && <YouTubeEmbed url={article.video_url} />}
+                  
+                  <ShareButtons title={article.title} slug={article.slug} />
                 </div>
 
                 {/* Tags Section */}

@@ -39,6 +39,7 @@ export default function NewArticleForm({
   const [status, setStatus] = useState<'draft' | 'published'>(initialData?.status || 'draft')
   const [coverUrl, setCoverUrl] = useState(initialData?.cover_url || '')
   const [slug, setSlug] = useState(initialData?.slug || '')
+  const [videoUrl, setVideoUrl] = useState(initialData?.video_url || '')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [uploadingImage, setUploadingImage] = useState(false)
@@ -52,6 +53,7 @@ export default function NewArticleForm({
       title,
       content,
       cover_url: coverUrl || null,
+      video_url: videoUrl || null,
       category_id: categoryId ? parseInt(categoryId) : null,
       status,
       updated_at: new Date().toISOString(),
@@ -285,6 +287,17 @@ export default function NewArticleForm({
               onChange={e => setCoverUrl(e.target.value)}
               className="mt-3 w-full text-xs text-gray-500 border border-gray-100 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-1 focus:ring-gray-200 placeholder-gray-300"
               placeholder="Ou coller une URL..."
+            />
+          </div>
+
+          {/* Vidéo YouTube */}
+          <div className="bg-white rounded-2xl border border-gray-100 p-5">
+            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">Vidéo YouTube</h3>
+            <input
+              value={videoUrl}
+              onChange={e => setVideoUrl(e.target.value)}
+              className="w-full text-xs text-gray-500 border border-gray-100 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-1 focus:ring-gray-200 placeholder-gray-300"
+              placeholder="URL de la vidéo (optionnel)..."
             />
           </div>
 

@@ -208,6 +208,7 @@ alter table public.advertisements         enable row level security;
 alter table public.newsletter_subscribers enable row level security;
 alter table public.media                  enable row level security;
 
+ALTER TABLE articles ADD COLUMN IF NOT EXISTS video_url TEXT;
 
 -- ============================================================
 -- POLICIES — PROFILES
