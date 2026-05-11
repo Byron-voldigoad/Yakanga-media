@@ -1,4 +1,5 @@
 'use client'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import Image from 'next/image'
@@ -15,15 +16,28 @@ const navItems = [
   { href: '/admin/newsletter', label: 'Newsletter', icon: Mail, exact: false },
 ]
 
+const logos = [
+  '/logo-noir.png',
+  '/logo-couleur.png',
+]
+
 export default function AdminSidebar({ fullName, role }: Props) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
+  const [currentLogo, setCurrentLogo] = useState(0)
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
     router.push('/')
   }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentLogo((prev) => (prev + 1) % logos.length)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [])
 
   function isActive(href: string, exact: boolean) {
     if (exact) return pathname === href
@@ -35,13 +49,17 @@ export default function AdminSidebar({ fullName, role }: Props) {
       {/* Logo Area */}
       <div className="px-8 pt-10 pb-8">
         <Link href="/" className="block mb-10 transition-transform hover:scale-105">
-          <div className="relative w-full h-12">
-            <Image
-              src="/logo.png"
-              alt="Yakanga Logo"
-              fill
-              className="object-contain object-left brightness-0 invert"
-            />
+          <div className="relative h-10 w-36">
+            {logos.map((src, index) => (
+              <Image
+                key={src}
+                src={src}
+                alt="Yakanga"
+                fill
+                className={`object-contain brightness-0 invert transition-opacity duration-700
+                            ${index === currentLogo ? 'opacity-100' : 'opacity-0'}`}
+              />
+            ))}
           </div>
         </Link>
         <div className="bg-white/5 rounded-xl px-3 py-2.5">

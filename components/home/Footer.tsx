@@ -77,11 +77,11 @@ export default function Footer() {
             <div className="space-y-4 font-ui text-sm text-gray-400">
               <div className="flex items-start gap-3">
                 <Phone className="h-5 w-5 text-accent shrink-0" />
-                <span>+237 600 000 000</span>
+                <span>+237 698 51 88 25 / +237 622 18 09 21</span>
               </div>
               <div className="flex items-start gap-3">
                 <Mail className="h-5 w-5 text-accent shrink-0" />
-                <span>contact@yakanga.media</span>
+                <span>ulrichenyegue17@gmail.com</span>
               </div>
               <div className="bg-white/5 p-4 rounded-lg border border-white/10 mt-6">
                 <p className="text-xs text-gray-500 italic mb-2">Bureaux :</p>

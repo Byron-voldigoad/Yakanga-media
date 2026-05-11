@@ -22,9 +22,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CATEGORIES } from "@/lib/constants";
 
 const logos = [
-  '/logo-noir.png',
-  '/logo-couleur.png',
-  '/logo-vert.png',
+  { src: '/logo-noir.png',    filter: '' },
+  { src: '/logo-couleur.png', filter: '' },
+  { src: '/logo-vert.png',    filter: 'brightness(0) saturate(100%) invert(22%) sepia(60%) saturate(600%) hue-rotate(95deg) brightness(85%)' },
 ]
 
 export default function Navbar() {
@@ -80,16 +80,17 @@ export default function Navbar() {
         <div className="flex items-center gap-8">
           <Link href="/">
             <div className="relative h-14 w-44">
-              {logos.map((src, index) => (
+              {logos.map((logo, index) => (
                 <Image
-                  key={src}
-                  src={src}
+                  key={logo.src}
+                  src={logo.src}
                   alt="Yakanga"
                   fill
                   className={`object-contain transition-opacity duration-700
                               ${index === currentLogo
                                 ? 'opacity-100'
                                 : 'opacity-0'}`}
+                  style={{ filter: logo.filter }}
                 />
               ))}
             </div>
