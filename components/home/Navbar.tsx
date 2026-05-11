@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Search, Menu, X, LogOut, User as UserIcon, LogIn, PlusCircle, ChevronDown } from "lucide-react";
 import CreatePostModal from "@/components/modals/CreatePostModal";
 import { Button } from "@/components/ui/button";
@@ -35,7 +36,17 @@ export default function Navbar() {
   const [isMobileRubriquesOpen, setIsMobileRubriquesOpen] = useState(false);
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
   const [currentLogo, setCurrentLogo] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
   const supabase = createClient();
+  const router = useRouter();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      router.push(`/recherche?q=${encodeURIComponent(searchQuery.trim())}`)
+      setSearchQuery('')
+    }
+  }
 
   useEffect(() => {
     const getUserData = async (user: User | null) => {
@@ -171,14 +182,18 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="relative hidden md:block">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Rechercher..."
-              className="w-[150px] lg:w-[250px] pl-9 bg-muted/50 border-none focus-visible:ring-1 focus-visible:ring-primary rounded-full transition-all focus:w-[300px]"
-            />
-          </div>
+          <form onSubmit={handleSearch} className="hidden md:flex items-center gap-2">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Rechercher..."
+                className="pl-9 pr-4 py-2 text-sm bg-gray-50 border border-gray-200 rounded-full outline-none focus:border-green-700 transition-colors w-48"
+              />
+            </div>
+          </form>
           {user && (
             <Button
               onClick={() => setIsModalOpen(true)}

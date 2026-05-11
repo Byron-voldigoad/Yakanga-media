@@ -1,37 +1,83 @@
+'use client'
 
-import { createClient } from '@/lib/server'
+import { useEffect, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { createClient } from '@/lib/client'
 import { Mail, Users, CheckCircle, XCircle, ChevronLeft, ChevronRight } from 'lucide-react'
 
 const PAGE_SIZE = 15
 
-export default async function NewsletterSubscribersPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string }>
-}) {
-  const { page: pageParam } = await searchParams
+type Subscriber = {
+  id: string
+  email: string
+  is_confirmed: boolean
+  subscribed_at: string
+}
+
+export default function NewsletterSubscribersPage() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const pageParam = searchParams.get('page')
   const page = Math.max(1, parseInt(pageParam || '1'))
   const from = (page - 1) * PAGE_SIZE
   const to = from + PAGE_SIZE - 1
 
-  const supabase = await createClient()
-  const { data: subscribers, count } = await supabase
-    .from('newsletter_subscribers')
-    .select('*', { count: 'exact' })
-    .order('subscribed_at', { ascending: false })
-    .range(from, to)
+  const [subscribers, setSubscribers] = useState<Subscriber[]>([])
+  const [totalCount, setTotalCount] = useState(0)
+  const [confirmed, setConfirmed] = useState(0)
+  const [loading, setLoading] = useState(true)
 
-  const totalPages = Math.ceil((count || 0) / PAGE_SIZE)
+  const supabase = createClient()
 
-  // Stats
-  const { count: confirmedCount } = await supabase
-    .from('newsletter_subscribers')
-    .select('*', { count: 'exact', head: true })
-    .eq('is_confirmed', true)
+  const fetchData = async () => {
+    setLoading(true)
 
-  const totalCount = count || 0
-  const confirmed = confirmedCount || 0
+    const { data, count } = await supabase
+      .from('newsletter_subscribers')
+      .select('*', { count: 'exact' })
+      .order('subscribed_at', { ascending: false })
+      .range(from, to)
+
+    const { count: confirmedCount } = await supabase
+      .from('newsletter_subscribers')
+      .select('*', { count: 'exact', head: true })
+      .eq('is_confirmed', true)
+
+    setSubscribers((data as Subscriber[]) ?? [])
+    setTotalCount(count || 0)
+    setConfirmed(confirmedCount || 0)
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [page])
+
+  const handleConfirm = async (id: string) => {
+    const { error } = await supabase
+      .from('newsletter_subscribers')
+      .update({ is_confirmed: true })
+      .eq('id', id)
+
+    if (!error) {
+      // Update local state immediately
+      setSubscribers(prev =>
+        prev.map(s => s.id === id ? { ...s, is_confirmed: true } : s)
+      )
+      setConfirmed(prev => prev + 1)
+    }
+  }
+
   const pending = totalCount - confirmed
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE)
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="w-8 h-8 border-4 border-green-700 border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-10 pb-20">
@@ -100,7 +146,8 @@ export default async function NewsletterSubscribersPage({
               <th className="px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">#</th>
               <th className="px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Email</th>
               <th className="px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Statut</th>
-              <th className="px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Date d'inscription</th>
+              <th className="px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Date d&apos;inscription</th>
+              <th className="px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -136,6 +183,21 @@ export default async function NewsletterSubscribersPage({
                     month: 'long',
                     day: 'numeric',
                   })}
+                </td>
+                <td className="px-8 py-4">
+                  {!sub.is_confirmed && (
+                    <button
+                      onClick={() => handleConfirm(sub.id)}
+                      className="text-xs bg-green-100 text-green-700 hover:bg-green-200 px-3 py-1 rounded-full font-semibold transition-colors"
+                    >
+                      Confirmer
+                    </button>
+                  )}
+                  {sub.is_confirmed && (
+                    <span className="text-xs text-gray-400 italic">
+                      Confirmé ✓
+                    </span>
+                  )}
                 </td>
               </tr>
             ))}

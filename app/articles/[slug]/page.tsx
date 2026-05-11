@@ -16,6 +16,7 @@ import { createClient } from "@/lib/server";
 import MDPreviewClient from "@/components/articles/MDPreviewClient";
 import ShareButtons from "@/components/articles/ShareButtons";
 import YouTubeEmbed from "@/components/articles/YouTubeEmbed";
+import NewsletterSection from "@/components/home/NewsletterSection";
 
 interface ArticlePageProps {
   params: Promise<{
@@ -215,23 +216,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
               {/* Sidebar Right - Recommendation/Ad (Desktop) */}
               <aside className="lg:col-span-3 space-y-12">
-                <div className="bg-primary text-white p-8 rounded-2xl shadow-xl shadow-primary/20 relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-                  <h5 className="font-heading text-xl mb-6 flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-accent" />
-                    Cercle Yakanga
-                  </h5>
-                  <p className="font-ui text-sm text-white/80 mb-6 italic">Ne manquez aucun de nos prochains grands récits culturels.</p>
-                  <div className="space-y-4">
-                    <input 
-                      type="email" 
-                      placeholder="Votre email..." 
-                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-accent transition-all"
-                    />
-                    <Button className="w-full bg-accent hover:bg-white hover:text-primary transition-all font-bold">
-                      S'ABONNER
-                    </Button>
-                  </div>
+                <div className="mt-6">
+                  <NewsletterSection />
                 </div>
 
                 <div className="space-y-8">
