@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, Menu, LogOut, User as UserIcon, LogIn, PlusCircle } from "lucide-react";
+import { Search, Menu, X, LogOut, User as UserIcon, LogIn, PlusCircle, ChevronDown } from "lucide-react";
 import CreatePostModal from "@/components/modals/CreatePostModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,19 +19,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-const categories = [
-  { name: "Édito", slug: "editorial" },
-  { name: "Actualités", slug: "news" },
-  { name: "Opinions", slug: "opinions" },
-  { name: "Mode", slug: "mode" },
-  { name: "Kalara", slug: "kalara" },
-];
+import { CATEGORIES } from "@/lib/constants";
 
 export default function Navbar() {
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileRubriquesOpen, setIsMobileRubriquesOpen] = useState(false);
+  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
   const supabase = createClient();
 
   useEffect(() => {
@@ -79,18 +75,81 @@ export default function Navbar() {
               />
             </div>
           </Link>
+
+          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-6">
-            {categories.map((cat) => (
-              <Link
-                key={cat.slug}
-                href={`/${cat.slug}`}
-                className="font-ui text-[15px] font-medium text-text hover:text-primary transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
-              >
-                {cat.name}
-              </Link>
-            ))}
+            <Link
+              href="/"
+              className="font-ui text-[15px] font-medium text-text hover:text-primary transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
+            >
+              Accueil
+            </Link>
+
+            {/* DESKTOP — Méga-menu */}
+            <div 
+              className="relative h-20 flex items-center"
+              onMouseEnter={() => setIsMegaMenuOpen(true)}
+              onMouseLeave={() => setIsMegaMenuOpen(false)}
+            >
+              <button className="flex items-center gap-1 font-ui text-[15px] font-medium text-text hover:text-primary transition-colors">
+                Rubriques
+                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isMegaMenuOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {isMegaMenuOpen && (
+                <>
+                  {/* Overlay */}
+                  <div className="fixed inset-0 top-20 bg-black/10 z-40" />
+
+                  {/* Méga-menu */}
+                  <div className="fixed left-0 right-0 top-20 bg-white shadow-xl border-t-2 border-primary z-50">
+                    <div className="max-w-7xl mx-auto px-8 py-5">
+                      
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
+                        Nos rubriques
+                      </p>
+
+                      <div className="grid grid-cols-5 gap-2">
+                        {CATEGORIES.map((cat) => (
+                          <Link
+                            key={cat.slug}
+                            href={`/${cat.slug}`}
+                            onClick={() => setIsMegaMenuOpen(false)}
+                            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary/5 hover:text-primary transition-colors text-sm font-medium text-gray-700"
+                          >
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                            {cat.name}
+                          </Link>
+                        ))}
+                      </div>
+
+                      <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
+                        <p className="text-xs text-gray-400 italic">
+                          La mémoire des cultures contemporaines
+                        </p>
+                        <Link 
+                          href="/"
+                          onClick={() => setIsMegaMenuOpen(false)}
+                          className="text-xs font-semibold text-primary hover:underline"
+                        >
+                          Voir tous les articles →
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <a
+              href="mailto:ulrichenyegue17@gmail.com"
+              className="font-ui text-[15px] font-medium text-text hover:text-primary transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
+            >
+              Contact
+            </a>
           </nav>
         </div>
+
         <div className="flex items-center gap-4">
           <div className="relative hidden md:block">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -164,11 +223,65 @@ export default function Navbar() {
             </div>
           )}
 
-          <Button variant="ghost" size="icon" className="lg:hidden">
-            <Menu className="h-6 w-6" />
+          {/* Mobile menu toggle */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </Button>
         </div>
       </div>
+
+      {/* Mobile Navigation */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden border-t border-border/40 bg-white animate-in slide-in-from-top duration-200">
+          <nav className="container mx-auto px-4 py-4 space-y-1">
+            <Link
+              href="/"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block px-4 py-3 text-sm font-ui font-medium text-text hover:bg-gray-50 hover:text-primary rounded-lg transition-colors"
+            >
+              Accueil
+            </Link>
+
+            {/* Rubriques collapsible */}
+            <div>
+              <button
+                onClick={() => setIsMobileRubriquesOpen(!isMobileRubriquesOpen)}
+                className="flex items-center justify-between w-full px-4 py-3 text-sm font-ui font-medium text-text hover:bg-gray-50 rounded-lg transition-colors"
+              >
+                Rubriques
+                <ChevronDown className={`w-4 h-4 transition-transform ${isMobileRubriquesOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {isMobileRubriquesOpen && (
+                <div className="pl-4 space-y-0.5">
+                  {CATEGORIES.map((cat) => (
+                    <Link
+                      key={cat.slug}
+                      href={`/${cat.slug}`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="block px-4 py-2 text-sm font-ui text-muted-foreground hover:bg-gray-50 hover:text-green-700 rounded-lg transition-colors"
+                    >
+                      {cat.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <a
+              href="mailto:ulrichenyegue17@gmail.com"
+              className="block px-4 py-3 text-sm font-ui font-medium text-text hover:bg-gray-50 hover:text-primary rounded-lg transition-colors"
+            >
+              Contact
+            </a>
+          </nav>
+        </div>
+      )}
+
       <CreatePostModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </header>
   );
