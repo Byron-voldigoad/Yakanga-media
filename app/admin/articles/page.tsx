@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/client'
 import Link from 'next/link'
-import { PlusCircle, LayoutGrid, List, ArrowRight } from 'lucide-react'
+import { PlusCircle, LayoutGrid, List, ArrowRight, Trash2 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
@@ -24,6 +24,19 @@ export default function AdminArticles() {
   const [view, setView] = useState<'list' | 'grid'>('list')
   const pageSize = 10
   const supabase = createClient()
+
+  const handleDelete = async (id: string, title: string) => {
+    if (!confirm(`Supprimer "${title}" ? Cette action est irréversible.`)) 
+      return
+    const supabase = createClient()
+    const { error } = await supabase
+      .from('articles')
+      .delete()
+      .eq('id', id)
+    if (!error) {
+      setArticles(prev => prev.filter(a => a.id !== id))
+    }
+  }
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -123,10 +136,16 @@ export default function AdminArticles() {
                   </td>
                   <td className="px-8 py-4 text-xs font-ui text-muted-foreground">{new Date(article.created_at).toLocaleDateString('fr-FR')}</td>
                   <td className="px-8 py-4 text-right">
-                    <Link href={`/admin/articles/new?edit=${article.id}`}
-                      className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-muted hover:bg-primary hover:text-white transition-all text-muted-foreground">
-                      <ArrowRight size={16} />
-                    </Link>
+                    <div className="flex items-center justify-end gap-4">
+                      <button onClick={() => handleDelete(article.id, article.title)}
+                        className="flex items-center gap-1 text-xs text-red-500 hover:text-red-700">
+                        <Trash2 className="w-3 h-3" /> Supprimer
+                      </button>
+                      <Link href={`/admin/articles/new?edit=${article.id}`}
+                        className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-muted hover:bg-primary hover:text-white transition-all text-muted-foreground">
+                        <ArrowRight size={16} />
+                      </Link>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -151,7 +170,13 @@ export default function AdminArticles() {
                 </Badge>
                 <h3 className="font-display text-xl text-secondary line-clamp-2 mb-4 h-14">{article.title}</h3>
                 <div className="flex items-center justify-between pt-4 border-t border-border">
-                  <span className="text-xs font-ui text-muted-foreground">{new Date(article.created_at).toLocaleDateString('fr-FR')}</span>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs font-ui text-muted-foreground">{new Date(article.created_at).toLocaleDateString('fr-FR')}</span>
+                    <button onClick={() => handleDelete(article.id, article.title)}
+                      className="flex items-center gap-1 text-xs text-red-500 hover:text-red-700">
+                      <Trash2 className="w-3 h-3" /> Supprimer
+                    </button>
+                  </div>
                   <Link href={`/admin/articles/new?edit=${article.id}`}
                     className="text-xs font-bold text-primary hover:text-accent transition-colors flex items-center gap-1">
                     ÉDITER <ArrowRight size={12} />

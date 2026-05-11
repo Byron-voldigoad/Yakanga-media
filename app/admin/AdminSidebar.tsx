@@ -1,8 +1,9 @@
 'use client'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { ArrowLeft, FileText, LayoutDashboard, Mail, Megaphone, PlusCircle } from 'lucide-react'
+import { ArrowLeft, FileText, LayoutDashboard, Mail, Megaphone, PlusCircle, LogOut } from 'lucide-react'
+import { createClient } from '@/lib/client'
 
 type Props = { fullName: string; role: string }
 
@@ -16,6 +17,13 @@ const navItems = [
 
 export default function AdminSidebar({ fullName, role }: Props) {
   const pathname = usePathname()
+  const router = useRouter()
+  const supabase = createClient()
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut()
+    router.push('/')
+  }
 
   function isActive(href: string, exact: boolean) {
     if (exact) return pathname === href
@@ -62,12 +70,17 @@ export default function AdminSidebar({ fullName, role }: Props) {
       </nav>
 
       {/* Footer */}
-      <div className="px-3 pb-5 space-y-0.5 border-t border-white/5 pt-4">
+      <div className="px-3 pb-5 space-y-2 border-t border-white/5 pt-4 mt-auto">
         <Link href="/"
           className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/30 hover:text-white hover:bg-white/5 transition-all">
           <ArrowLeft size={15} />
           Retour au site
         </Link>
+        <button onClick={handleSignOut}
+          className="flex items-center gap-3 px-4 py-3 text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-colors w-full">
+          <LogOut className="w-5 h-5" />
+          <span>Déconnexion</span>
+        </button>
       </div>
     </aside>
   )
