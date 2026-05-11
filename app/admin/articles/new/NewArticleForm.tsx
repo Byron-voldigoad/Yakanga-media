@@ -3,8 +3,23 @@ import { useState } from 'react'
 import { createClient } from '@/lib/client'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
+import { commands } from '@uiw/react-md-editor'
+
+const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false })
 
 type Category = { id: number; name: string }
+
+function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+}
 
 export default function NewArticleForm({ 
   categories, 
@@ -23,6 +38,7 @@ export default function NewArticleForm({
   const [categoryId, setCategoryId] = useState(initialData?.category_id ? String(initialData.category_id) : '')
   const [status, setStatus] = useState<'draft' | 'published'>(initialData?.status || 'draft')
   const [coverUrl, setCoverUrl] = useState(initialData?.cover_url || '')
+  const [slug, setSlug] = useState(initialData?.slug || '')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [uploadingImage, setUploadingImage] = useState(false)
@@ -51,17 +67,13 @@ export default function NewArticleForm({
       err = updateErr
     } else {
       // Insert new article
-      const slug = title.toLowerCase()
-        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-|-$/g, '')
-        + '-' + Date.now()
+      const finalSlug = slug || generateSlug(title)
         
       const { error: insertErr } = await supabase
         .from('articles')
         .insert({
           ...articleData,
-          slug,
+          slug: finalSlug,
           author_id: userId,
         })
       err = insertErr
@@ -130,22 +142,92 @@ export default function NewArticleForm({
           <div className="bg-white rounded-2xl border border-gray-100 p-6">
             <input
               value={title}
-              onChange={e => setTitle(e.target.value)}
+              onChange={e => {
+                setTitle(e.target.value)
+                if (!initialData?.id) setSlug(generateSlug(e.target.value))
+              }}
               className="w-full text-2xl font-bold text-gray-900 placeholder-gray-300 focus:outline-none"
               placeholder="Titre de l'article..."
             />
+            {!initialData?.id && slug && (
+              <p className="text-xs text-gray-400 mt-2">Slug: {slug}</p>
+            )}
           </div>
 
           {/* Contenu */}
-          <div className="bg-white rounded-2xl border border-gray-100 p-6">
-            <textarea
+          <div className="bg-white rounded-2xl border border-gray-100 p-6" data-color-mode="light">
+            <MDEditor
               value={content}
-              onChange={e => setContent(e.target.value)}
-              rows={20}
-              className="w-full text-gray-700 placeholder-gray-400 focus:outline-none resize-none leading-relaxed text-[15px]"
-              placeholder="Commencez à rédiger votre article ici...
-
-Vous pouvez écrire librement. Votre texte sera mis en forme à la publication."
+              onChange={(val) => setContent(val || '')}
+              height={450}
+              preview="live"
+              commands={[
+                {
+                  ...commands.bold,
+                  buttonProps: { 'aria-label': 'Gras', title: 'Gras' }
+                },
+                {
+                  ...commands.italic,
+                  buttonProps: { 'aria-label': 'Italique', title: 'Italique' }
+                },
+                {
+                  ...commands.strikethrough,
+                  buttonProps: { 'aria-label': 'Barré', title: 'Barré' }
+                },
+                commands.divider,
+                {
+                  ...commands.title1,
+                  buttonProps: { 'aria-label': 'Titre 1', title: 'Titre 1' }
+                },
+                {
+                  ...commands.title2,
+                  buttonProps: { 'aria-label': 'Titre 2', title: 'Titre 2' }
+                },
+                {
+                  ...commands.title3,
+                  buttonProps: { 'aria-label': 'Titre 3', title: 'Titre 3' }
+                },
+                commands.divider,
+                {
+                  ...commands.unorderedListCommand,
+                  buttonProps: { 'aria-label': 'Liste à puces', title: 'Liste à puces' }
+                },
+                {
+                  ...commands.orderedListCommand,
+                  buttonProps: { 'aria-label': 'Liste numérotée', title: 'Liste numérotée' }
+                },
+                commands.divider,
+                {
+                  ...commands.link,
+                  buttonProps: { 'aria-label': 'Insérer un lien', title: 'Insérer un lien' }
+                },
+                {
+                  ...commands.quote,
+                  buttonProps: { 'aria-label': 'Citation', title: 'Citation' }
+                },
+              ]}
+              extraCommands={[
+                {
+                  ...commands.codeEdit,
+                  buttonProps: { 'aria-label': 'Éditer', title: 'Mode édition' }
+                },
+                {
+                  ...commands.codeLive,
+                  buttonProps: { 'aria-label': 'Côte à côte', title: 'Édition + Aperçu' }
+                },
+                {
+                  ...commands.codePreview,
+                  buttonProps: { 'aria-label': 'Aperçu', title: 'Aperçu uniquement' }
+                },
+                {
+                  ...commands.fullscreen,
+                  buttonProps: { 'aria-label': 'Plein écran', title: 'Plein écran' }
+                },
+              ]}
+              textareaProps={{
+                spellCheck: true,
+                lang: 'fr'
+              }}
             />
           </div>
         </div>

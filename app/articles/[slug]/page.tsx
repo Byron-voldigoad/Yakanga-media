@@ -13,6 +13,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { createClient } from "@/lib/server";
+import MDPreviewClient from "@/components/articles/MDPreviewClient";
+
 
 interface ArticlePageProps {
   params: Promise<{
@@ -152,9 +154,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   </p>
 
                   {/* Content (Rendering raw HTML for now, assuming it comes from an editor) */}
-                  <div 
+                  <MDPreviewClient 
                     className="font-body text-text text-lg md:text-xl leading-[1.8] space-y-8 first-letter:text-6xl first-letter:font-display first-letter:mr-3 first-letter:float-left first-letter:text-primary"
-                    dangerouslySetInnerHTML={{ __html: article.content }} 
+                    source={article.content || ''} 
                   />
                 </div>
 
